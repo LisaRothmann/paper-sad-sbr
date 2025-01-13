@@ -19,7 +19,7 @@ This is a commented report for the R codes used to analyse data of the paper ent
 
 ## R packages
 
-Let's load a bunch of packages that will be nused in the analysis.
+Let's load a bunch of packages that will be used in the analysis.
 
 ```{r message=FALSE, warning=FALSE, paged.print=FALSE}
 library(tidyverse)
@@ -322,8 +322,6 @@ sad %>%
 
 
 ## Lin's concordance 
-
-
 ```{r}
 library(purrr)
 library(epiR)
@@ -336,6 +334,7 @@ library(epiR)
 sad_noaid_new <- sad %>%
   group_by(rater) %>%
   filter(method == "new_noaid")
+
 ccc_noaid_new <- by(sad_noaid_new, sad_noaid_new$rater, function(sad_noaid_new)
   epi.ccc(sad_noaid_new$actual, sad_noaid_new$estimate,  ci = "z-transform", conf.level = 0.95))
 ```
@@ -545,7 +544,6 @@ We will estimate the means and compare them using `lsmeans` package.
 ### Reshape data to wide 
 
 ```{r}
-
 ccc2 <- ccc %>%
   filter(stat != "ccc.lower") %>%
   filter(stat != "ccc.upper") %>%
@@ -555,6 +553,8 @@ ccc2 <- ccc %>%
 ### Concordance coefficient
 
 ```{r}
+
+library(Matrix)
 # pc
 library(multcomp)
 mix_pc <- lmer(est ~ method + (1 | rater), data = ccc2, REML = FALSE)
@@ -733,5 +733,9 @@ library(knitr)
 kable(table2)
 
 
+	0.8375556	0.7796401	0.8901147
+old_aid	0.7360109	0.8127776	0.7485236	0.8722027
+new_noaid	0.7597936	0.8303938	0.7705829	0.8849706
+new_aid	0.9409826	0.9464353	0.9240251	0.9651455
 ```
 
